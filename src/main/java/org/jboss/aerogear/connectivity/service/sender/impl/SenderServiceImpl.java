@@ -38,6 +38,7 @@ import org.jboss.aerogear.connectivity.model.iOSVariant;
 import org.jboss.aerogear.connectivity.service.MobileVariantInstanceService;
 import org.jboss.aerogear.connectivity.service.sender.SenderService;
 import org.jboss.aerogear.connectivity.service.sender.message.BroadcastMessage;
+import org.jboss.aerogear.connectivity.service.sender.message.SelectiveSendCriterias;
 import org.jboss.aerogear.connectivity.service.sender.message.SelectiveSendMessage;
 
 @Stateless
@@ -66,26 +67,25 @@ public class SenderServiceImpl implements SenderService {
     public void sendToAliases(PushApplication pushApplication, SelectiveSendMessage message) {
 
         // get all the criterias:
-        final List<String> submittedAliases = message.getAliases();
-        final List<String> submittedDeviceTypes = message.getDeviceTypes();
-        // TODO: Add getCategory();
+        final SelectiveSendCriterias criterias = message.getSendCriterias();
 
         // TODO: DISPATCH TO A QUEUE .....
         final Set<iOSVariant> iOSVariants = pushApplication.getIOSApps();
         for (iOSVariant iOSVariant : iOSVariants) {
-            final List<String> selectiveTokenPerVariant = mobileVariantInstanceService.findAllDeviceTokenForVariantIDByAliasAndDeviceType(iOSVariant.getVariantID(), submittedAliases, submittedDeviceTypes);
+            final List<String> selectiveTokenPerVariant = mobileVariantInstanceService.findAllDeviceTokenForVariantByCriterias(iOSVariant.getVariantID(), criterias);
             apnsSender.sendPushMessage(iOSVariant, selectiveTokenPerVariant, message);
         }
 
         // TODO: DISPATCH TO A QUEUE .....
         Set<AndroidVariant> androidVariants = pushApplication.getAndroidApps();
         for (AndroidVariant androidVariant : androidVariants) {
-            final List<String> androidTokenPerVariant = mobileVariantInstanceService.findAllDeviceTokenForVariantIDByAliasAndDeviceType(androidVariant.getVariantID(), submittedAliases, submittedDeviceTypes);
+            final List<String> androidTokenPerVariant = mobileVariantInstanceService.findAllDeviceTokenForVariantByCriterias(androidVariant.getVariantID(), criterias);
             gcmSender.sendPushMessage(androidTokenPerVariant, message, androidVariant.getGoogleKey());
         }
 
         // TODO: DISPATCH TO A QUEUE .....
         final Map<String, String> simplePushCategoriesAndValues = message.getSimplePush();
+        final List<String> submittedDeviceTypes = criterias.getDeviceTypes();
 
         // if no SimplePush object is present: skip it.
         // if there is a filter on "deviceTypes", but that contains NO 'web': skip it
@@ -99,7 +99,7 @@ public class SenderServiceImpl implements SenderService {
             final Set<String> categoriesToNotify = simplePushCategoriesAndValues.keySet();
             // add empty list for every category:
             for (String category : categoriesToNotify) {
-                final List<String> tokensPerCategory = mobileVariantInstanceService.findAllDeviceTokenForVariantIDByCategoryAndAlias(simplePushVariant.getVariantID(), category, submittedAliases);
+                final List<String> tokensPerCategory = mobileVariantInstanceService.findAllDeviceTokenForVariantIDByCategoryAndAlias(simplePushVariant.getVariantID(), category, criterias.getAliases());
                 simplePushSender.sendMessage(simplePushVariant.getPushNetworkURL(), simplePushCategoriesAndValues.get(category), tokensPerCategory);
             }
         }

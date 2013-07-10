@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import org.jboss.aerogear.connectivity.jpa.dao.MobileVariantInstanceDao;
 import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
 import org.jboss.aerogear.connectivity.service.MobileVariantInstanceService;
+import org.jboss.aerogear.connectivity.service.sender.message.SelectiveSendCriterias;
 
 public class MobileVariantInstanceServiceImpl implements MobileVariantInstanceService {
 
@@ -80,7 +81,7 @@ public class MobileVariantInstanceServiceImpl implements MobileVariantInstanceSe
     }
 
     @Override
-    public List<String> findAllDeviceTokenForVariantIDByAliasAndDeviceType(String variantID, List<String> aliases, List<String> deviceTypes) {
+    public List<String> findAllDeviceTokenForVariantByCriterias(String variantID, SelectiveSendCriterias criterias) {
         return dao.findAllDeviceTokenForVariantIDByCategoryAndAliasAndDeviceType(variantID, null, aliases, deviceTypes);
     }
 

@@ -19,6 +19,7 @@ package org.jboss.aerogear.connectivity.service;
 import java.util.List;
 
 import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
+import org.jboss.aerogear.connectivity.service.sender.message.SelectiveSendCriterias;
 
 public interface MobileVariantInstanceService {
 
@@ -41,9 +42,11 @@ public interface MobileVariantInstanceService {
 
 
     // =========================== SELECTIVE SENDER =================================
-
-    List<String> findAllDeviceTokenForVariantIDByAliasAndDeviceType(String variantID, List<String> aliases, List<String> deviceTypes);
-
+    
+    /**
+     * Finds token for a variant (variantID) and given criteria arguments
+     */
+    List<String> findAllDeviceTokenForVariantByCriterias(String variantID, SelectiveSendCriterias criterias);
     
     List<String> findAllDeviceTokenForVariantIDByCategoryAndAlias(String variantID, String category, List<String> aliases);
 
