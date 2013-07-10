@@ -27,6 +27,7 @@ import org.jboss.aerogear.connectivity.jpa.AbstractGenericDao;
 import org.jboss.aerogear.connectivity.jpa.dao.MobileVariantInstanceDao;
 import org.jboss.aerogear.connectivity.model.AbstractMobileVariant;
 import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
+import org.jboss.aerogear.connectivity.service.sender.message.SelectiveSendCriterias;
 
 public class MobileVariantInstanceDaoImpl extends AbstractGenericDao<MobileVariantInstanceImpl, String> implements MobileVariantInstanceDao {
 
@@ -103,5 +104,11 @@ public class MobileVariantInstanceDaoImpl extends AbstractGenericDao<MobileVaria
         }
 
         return jpql.getResultList();
+    }
+
+    @Override
+    public List<String> findAllDeviceTokenForVariantByCriterias(String variantID, SelectiveSendCriterias criterias) {
+
+        return this.findAllDeviceTokenForVariantIDByCategoryAndAliasAndDeviceType(variantID, criterias.getCategory(), criterias.getAliases(), criterias.getDeviceTypes());
     }
 }

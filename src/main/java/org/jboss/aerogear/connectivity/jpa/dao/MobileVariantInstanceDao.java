@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.jboss.aerogear.connectivity.jpa.GenericDao;
 import org.jboss.aerogear.connectivity.model.MobileVariantInstanceImpl;
+import org.jboss.aerogear.connectivity.service.sender.message.SelectiveSendCriterias;
 
 public interface MobileVariantInstanceDao extends GenericDao<MobileVariantInstanceImpl, String> {
 
@@ -34,4 +35,9 @@ public interface MobileVariantInstanceDao extends GenericDao<MobileVariantInstan
      * Query all tokens for the given variant, by respecting a few criterias (category, aliases and deviceTypes)
      */
     List<String> findAllDeviceTokenForVariantIDByCategoryAndAliasAndDeviceType(String variantID, String category, List<String> aliases, List<String> deviceTypes);
+
+    /**
+     * Selective Sender API:
+     */
+    List<String> findAllDeviceTokenForVariantByCriterias(String variantID, SelectiveSendCriterias criterias);
 }

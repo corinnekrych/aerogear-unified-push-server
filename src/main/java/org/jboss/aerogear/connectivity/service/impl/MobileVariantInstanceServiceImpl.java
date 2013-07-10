@@ -82,7 +82,7 @@ public class MobileVariantInstanceServiceImpl implements MobileVariantInstanceSe
 
     @Override
     public List<String> findAllDeviceTokenForVariantByCriterias(String variantID, SelectiveSendCriterias criterias) {
-        return dao.findAllDeviceTokenForVariantIDByCategoryAndAliasAndDeviceType(variantID, null, aliases, deviceTypes);
+        return dao.findAllDeviceTokenForVariantByCriterias(variantID, criterias);
     }
 
     @Override
